@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import '../config.dart';
+import '../services/token_store.dart';
 
 class LiftHealthScreen extends StatefulWidget {
   const LiftHealthScreen({super.key});
@@ -28,8 +28,7 @@ class _LiftHealthScreenState extends State<LiftHealthScreen> {
   }
 
   Future<String?> _getAuthToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('authToken');
+    return TokenStore.read();
   }
 
   Future<void> _fetchHealthData() async {

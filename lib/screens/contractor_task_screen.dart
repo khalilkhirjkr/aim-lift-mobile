@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'submit_report_screen.dart';
 import 'view_report_screen.dart';
 import '../config.dart';
+import '../services/token_store.dart';
 
 class ContractorTaskScreen extends StatefulWidget {
   const ContractorTaskScreen({super.key});
@@ -87,8 +87,7 @@ class _ContractorTaskScreenState extends State<ContractorTaskScreen> {
     if (initial) setState(() => _isLoading = true);
 
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('authToken');
+      final token = await TokenStore.read();
       if (token == null) {
         if (initial) setState(() => _error = 'Not authenticated.');
         return;

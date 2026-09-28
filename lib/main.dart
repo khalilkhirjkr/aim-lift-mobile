@@ -1,6 +1,6 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'services/token_store.dart';
 
 // Import all your screens
 import 'screens/incident_list_screen.dart';
@@ -18,16 +18,8 @@ class AimLiftApp extends StatelessWidget {
 
   // This function checks if a token is already saved
   Future<bool> _checkLoginStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String token = prefs.getString('authToken') ?? '';
-
-    print("--- CheckLoginStatus ---");
-    print("Token read from SharedPreferences: '$token'");
-
-    bool isLoggedIn = token.isNotEmpty;
-    print("isLoggedIn determined as: $isLoggedIn");
-    print("------------------------");
-    return isLoggedIn;
+    final String token = await TokenStore.read() ?? '';
+    return token.isNotEmpty;
   }
 
   @override
@@ -124,9 +116,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   // This function clears the token and returns to login
   Future<void> _handleLogout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('authToken'); // Remove the stored token
-    print("Auth token removed.");
+    await TokenStore.clear();
     if (mounted) {
       // Go back to login and remove all other screens
       Navigator.of(context).pushAndRemoveUntil(

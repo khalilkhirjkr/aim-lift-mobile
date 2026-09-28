@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../main.dart'; // To navigate to MainScreen
 import '../config.dart';
+import '../services/token_store.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -59,9 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
         final String? token = responseData['access']; // Key is 'access' for JWT
 
         if (token != null) {
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString('authToken', token);
-          print('Login successful, token saved.');
+          await TokenStore.save(token);
 
           // Navigate to the main app screen
           Navigator.of(context).pushReplacement(
